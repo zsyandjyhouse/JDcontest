@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-
+from get_actions import *
 import pandas as pd
 import sys
 reload(sys)
@@ -15,17 +15,17 @@ ActionAllFile = "JData_Action_All.csv"
 ProductBasicFeaFile = "JData_Product_Basic_Fea.csv"
 skuFeaInCommentFile = "sku_fea_in_comment_ultimate.csv"
 
-#获取时间段内的行为数据
-def get_actions(start_time, end_time):
-    """
-    :param start_date:
-    :param end_date:
-    :return: actions: pd.Dataframe
-    """
-    action_all = pd.read_csv(FilePath + ActionAllFile)
-    action_all.time = pd.to_datetime(action_all['time'],format='%Y-%m-%d %H:%M:%S')
-    actions = action_all[(action_all.time >= start_time) & (action_all.time <= end_time)]
-    return actions
+# #获取时间段内的行为数据
+# def get_actions(start_time, end_time):
+#     """
+#     :param start_date:
+#     :param end_date:
+#     :return: actions: pd.Dataframe
+#     """
+#     action_all = pd.read_csv(FilePath + ActionAllFile)
+#     action_all.time = pd.to_datetime(action_all['time'],format='%Y-%m-%d %H:%M:%S')
+#     actions = action_all[(action_all.time >= start_time) & (action_all.time <= end_time)]
+#     return actions
 
 #获得基础商品特征，来自product表里
 def get_basic_product_fea():

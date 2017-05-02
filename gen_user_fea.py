@@ -5,6 +5,7 @@ from pandas import Series, DataFrame
 import pandas as pd
 import numpy as np
 import sys
+from get_actions import *
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -18,16 +19,16 @@ ProductBasicFeaFile = "JData_Product_Basic_Fea.csv"
 skuFeaInCommentFile = "sku_fea_in_comment_ultimate.csv"
 
 #获取时间段内的行为数据
-def get_actions(start_time, end_time):
-    """
-    :param start_date:
-    :param end_date:
-    :return: actions: pd.Dataframe
-    """
-    action_all = pd.read_csv(FilePath + ActionAllFile)
-    action_all.time = pd.to_datetime(action_all['time'],format='%Y-%m-%d %H:%M:%S')
-    actions = action_all[(action_all.time >= start_time) & (action_all.time <= end_time)]
-    return actions
+# def get_actions(start_time, end_time):
+#     """
+#     :param start_date:
+#     :param end_date:
+#     :return: actions: pd.Dataframe
+#     """
+#     action_all = pd.read_csv(FilePath + ActionAllFile)
+#     action_all.time = pd.to_datetime(action_all['time'],format='%Y-%m-%d %H:%M:%S')
+#     actions = action_all[(action_all.time >= start_time) & (action_all.time <= end_time)]
+#     return actions
 
 def convert_age(age_str):
     if age_str == u'-1':
@@ -67,6 +68,7 @@ def get_user_fea_in_action(start_time, end_time):
     # actions['user_action_3_ratio'] = actions['action_4'] / actions['action_3']
     # actions['user_action_5_ratio'] = actions['action_4'] / actions['action_5']
     # actions['user_action_6_ratio'] = actions['action_4'] / actions['action_6']
+    print actions
     user_sku_in_action = actions[['user_id','type_1','type_2','type_3','type_4','type_5','type_6']]
     # user_sku_in_action.to_csv(FilePath+'user_dku_in_action.csv',index=False)
     return user_sku_in_action

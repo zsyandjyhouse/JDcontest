@@ -36,6 +36,9 @@ def train_and_predict(train_set,train_label,preds,predict_set):
     feature_score = model.get_fscore()
     feature_score = sorted(feature_score.items(), key=lambda x:x[1],reverse=True)
     fs = []
-    for (key,value) in feature_score:
-        fs.append("{0},{1}\n".format(key,value))
-    return preds,fs
+    for (key, value) in feature_score:
+        fs.append("{0},{1}\n".format(key, value))
+    with open(FilePath+'fea_score.csv', 'w') as f:
+        f.writelines("feature,score\n")
+        f.writelines(fs)
+    return preds

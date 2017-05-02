@@ -3,6 +3,7 @@
 
 import pandas as pd
 import sys
+from get_actions import *
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -15,21 +16,22 @@ ActionAllFile = "JData_Action_All.csv"
 ProductBasicFeaFile = "JData_Product_Basic_Fea.csv"
 skuFeaInCommentFile = "sku_fea_in_comment_ultimate.csv"
 
-#获取时间段内的行为数据
-def get_actions(start_time, end_time):
-    """
-    :param start_date:
-    :param end_date:
-    :return: actions: pd.Dataframe
-    """
-    action_all = pd.read_csv(FilePath + ActionAllFile)
-    action_all.time = pd.to_datetime(action_all['time'],format='%Y-%m-%d %H:%M:%S')
-    actions = action_all[(action_all.time >= start_time) & (action_all.time <= end_time)]
-    return actions
+# #获取时间段内的行为数据
+# def get_actions(start_time, end_time):
+#     """
+#     :param start_date:
+#     :param end_date:
+#     :return: actions: pd.Dataframe
+#     """
+#     action_all = pd.read_csv(FilePath + ActionAllFile)
+#     action_all.time = pd.to_datetime(action_all['time'],format='%Y-%m-%d %H:%M:%S')
+#     actions = action_all[(action_all.time >= start_time) & (action_all.time <= end_time)]
+#     return actions
 
 #获取时间段内的行为数据user,sku,actioncount
 def get_action_feat(start_time, end_time):
     actions = get_actions(start_time, end_time)
+    actions = actions[actions['cate'] == 8]
     actions = actions[['user_id', 'sku_id', 'type']]
     df = pd.get_dummies(actions['type'], prefix='%s-%s-action' % (start_time, end_time))
     actions = pd.concat([actions, df], axis=1)  # type: pd.DataFrame

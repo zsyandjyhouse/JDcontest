@@ -2,9 +2,11 @@
 # -*- coding: UTF-8 -*-
 
 from pandas import Series, DataFrame
+from get_actions import *
 import pandas as pd
 import numpy as np
 import sys
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -15,17 +17,6 @@ ProductFile = "JData_Product.csv"
 UserFile = "JData_User.csv"
 ActionAllFile = "JData_Action_All.csv"
 
-#获取时间段内的行为数据
-def get_actions(start_time, end_time):
-    """
-    :param start_date:
-    :param end_date:
-    :return: actions: pd.Dataframe
-    """
-    action_all = pd.read_csv(FilePath + ActionAllFile)
-    action_all.time = pd.to_datetime(action_all['time'],format='%Y-%m-%d %H:%M:%S')
-    actions = action_all[(action_all.time >= start_time) & (action_all.time <= end_time)]
-    return actions
 
 #获取时间段内购买行为的用户和商品对，label设为1
 def get_labels(start_time, end_time):
