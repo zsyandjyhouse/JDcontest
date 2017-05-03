@@ -97,7 +97,7 @@ def offline():
     sku_fea_file = 'sku_fea_'+train_start_date_str+'to'+train_end_date_str+'.csv'
     user_fea_file = 'user_fea_'+train_start_date_str+'to'+train_end_date_str+'.csv'
     train_set_file = 'train_set_'+train_start_date_str+'to'+train_end_date_str+'.csv'
-    test_set_file = 'test_set_' + train_start_date_str + 'to' + train_end_date_str + '.csv'
+    predict_set_file = 'predict_set_' + predict_start_date_str + 'to' + predict_end_date_str + '.csv'
 
     predict_real_label = get_labels(predict_label_start_datetime, predict_label_end_datetime)
     predict_real_label.to_csv(FilePath+predict_real_label_file, index=False)
@@ -111,18 +111,21 @@ def offline():
     user_fea.to_csv(FilePath + user_fea_file, index=False)
     print '用户特征生成完毕'
     train_set=make_fea_set(sku_fea, user_fea, train_start_datetime, train_end_datetime)
-    predict_set=make_fea_set(sku_fea, user_fea, predict_start_datetime, predict_end_datetime)
     labels=get_labels(label_start_datetime,label_end_datetime)
     train_set=pd.merge(train_set,labels,on=['user_id','sku_id'],how='left')
+    train_set['label'].fillna(0, inplace=True)
     labels=train_set[['label']]
-    train_set.to_csv(FilePath + train_set_file, index=False)
-    train_set.drop(['user_id','sku_id','label'],axis=1)
+    column_name_of_type4_before10 = '%s-%s-action_4' % (train_end_datetime-pd.to_timedelta('10 days'), train_end_datetime)
+    train_set.drop(['user_id','sku_id','label',column_name_of_type4_before10],axis=1,inplace=True)
     print '训练集生成完毕'
+    train_set.to_csv(FilePath + train_set_file, index=False)
 
+    predict_set = make_fea_set(sku_fea, user_fea, predict_start_datetime, predict_end_datetime)
     user_sku_pair_predict = predict_set[['user_id', 'sku_id']]
-    predict_set.to_csv(FilePath + test_set_file, index=False)
-    predict_set.drop(['user_id', 'sku_id'], axis=1)
+    column_name_of_type4_before10 = '%s-%s-action_4' % (predict_end_datetime - pd.to_timedelta('10 days'), predict_end_datetime)
+    predict_set.drop(['user_id', 'sku_id',column_name_of_type4_before10], axis=1,inplace=True)
     print '预测集生成完毕'
+    predict_set.to_csv(FilePath + predict_set_file, index=False)
 
     xgb_preds= train_and_predict(train_set,labels,user_sku_pair_predict,predict_set)
     xgb_preds.to_csv(FilePath+xgb_preds_file,index=False)

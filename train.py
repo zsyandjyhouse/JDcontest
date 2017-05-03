@@ -8,6 +8,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 def train_and_predict(train_set,train_label,preds,predict_set):
+    FilePath = "../JData/"
     train_set = train_set.values
     predict_set = predict_set.values
     train_set = xgb.DMatrix(train_set,label=train_label)
@@ -36,6 +37,7 @@ def train_and_predict(train_set,train_label,preds,predict_set):
     feature_score = model.get_fscore()
     feature_score = sorted(feature_score.items(), key=lambda x:x[1],reverse=True)
     fs = []
+
     for (key, value) in feature_score:
         fs.append("{0},{1}\n".format(key, value))
     with open(FilePath+'fea_score.csv', 'w') as f:

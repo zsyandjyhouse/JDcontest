@@ -13,7 +13,7 @@ def make_fea_set(sku_fea, user_fea, train_start_date, train_end_time):
     start_days = "2016-02-01"
     # generate 时间窗口
     actions = None
-    for i in (1, 2, 3, 5, 7):
+    for i in (1, 2, 3, 5, 7, 10, 15):
     #for i in (1, 2, 3, 5, 7, 10, 15, 21, 30):
         start_time = train_end_time - pd.to_timedelta(str(i)+' days')
         if actions is None:
@@ -27,5 +27,5 @@ def make_fea_set(sku_fea, user_fea, train_start_date, train_end_time):
 
     actions = actions.fillna(0)
     print 'fea_weidu3',actions.shape
-    actions.to_csv('test'+str(train_end_time).split(' ')[0]+'.csv')
+    #actions.to_csv('test'+str(train_end_time).split(' ')[0]+'.csv')
     return actions
