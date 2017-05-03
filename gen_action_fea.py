@@ -28,14 +28,28 @@ skuFeaInCommentFile = "sku_fea_in_comment_ultimate.csv"
 #     actions = action_all[(action_all.time >= start_time) & (action_all.time <= end_time)]
 #     return actions
 
+# def getday(time):
+#     time=str(time).split(' ')[0]
+#     time=time.split('-')
+#     time=time[1]+time[2]
+#     return time
 #获取时间段内的行为数据user,sku,actioncount
 def get_action_feat(start_time, end_time):
     actions = get_actions(start_time, end_time)
+    # start_time=getday(start_time)
+    # end_time=getday(end_time)
     actions = actions[actions['cate'] == 8]
     actions = actions[['user_id', 'sku_id', 'type']]
     df = pd.get_dummies(actions['type'], prefix='%s-%s-action' % (start_time, end_time))
+    
     actions = pd.concat([actions, df], axis=1)  # type: pd.DataFrame
     actions = actions.groupby(['user_id', 'sku_id'], as_index=False).sum()
+    actions.fillna(0,inplace=True)
+
+    name='%s-%s-action' % (start_time, end_time)
+    actions[name+'_1256_d_4']=actions[name+'_1']+actions[name+'_2']+actions[name+'_5']+actions[name+'_6']
+    actions[name+'_1256_d_4']=actions[name+'_4']/actions[name+'_1256_d_4']
+   # print actions
     del actions['type']
     # action_fea_file = 'action_fea_' + STARTdt_str + 'to' + ENDdt_str + '.csv'
     # action_fea.to_csv(FilePath + action_fea_file, index=False)
@@ -43,15 +57,15 @@ def get_action_feat(start_time, end_time):
 
 
 if __name__ == '__main__':
-    STARTdt_str = '2016-03-01'
-    ENDdt_str = '2016-03-01'
+    STARTdt_str = '2016-04-01'
+    ENDdt_str = '2016-04-01'
     STARTdt = pd.to_datetime(STARTdt_str, format='%Y-%m-%d')
     ENDdt = pd.to_datetime(ENDdt_str, format='%Y-%m-%d')
     STARTtime = pd.to_datetime(STARTdt_str + ' 00:00:00', format='%Y-%m-%d %H:%M:%S')
     ENDtime = pd.to_datetime(ENDdt_str + ' 23:59:59', format='%Y-%m-%d %H:%M:%S')
 
     action_fea = get_action_feat(STARTtime,ENDtime)
-    print action_fea
+    #print action_fea
     print action_fea.dtypes
     action_fea_file = 'action_fea_'+STARTdt_str + 'to'+ENDdt_str + '.csv'
     action_fea.to_csv(FilePath+action_fea_file,index=False)
