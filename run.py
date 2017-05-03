@@ -167,4 +167,4 @@ def run_all(ifonline):
         submitcsv.to_csv(FilePath + submit_file, index=False)
 
 if __name__ == '__main__':
-    run_all('online')
+    run_all('offline')
