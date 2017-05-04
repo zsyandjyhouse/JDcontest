@@ -19,7 +19,7 @@ def train_and_predict(train_set,train_label,preds,predict_set):
             'eval_metric':'auc',
             'gamma':0.1,
             'min_child_weight':1.1,
-            'max_depth':5,
+            'max_depth':6,
             'lambda':10,
             'subsample':0.7,
             'colsample_bytree':0.7,
@@ -28,8 +28,16 @@ def train_and_predict(train_set,train_label,preds,predict_set):
             'tree_method':'exact',
             'seed':0
             }
+    # param = {'max_depth': 10, 
+    #         'eta': 0.05, 
+    #         'silent': 1, 
+    #         'objective': 'binary:logistic',
+    #         'eval_metric':'logloss',
+    #         'max_depth':7
 
-    model = xgb.train(params,train_set,num_boost_round=3500)
+    # }
+
+    model = xgb.train(params,train_set,num_boost_round=4000)
     preds['label'] = model.predict(predict_set)
     preds.label = MinMaxScaler().fit_transform(preds.label)
     #preds.to_csv("xgb_preds.csv",index=None)

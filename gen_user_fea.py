@@ -37,8 +37,9 @@ def get_basic_user_fea():
     return user
 
     #获取时间段内的操作行为个数统计
-def get_user_fea_in_action(start_time, end_time):
-    actions = get_actions(start_time, end_time)
+def get_user_fea_in_action(start_time, end_time,action_data):
+    actions=action_data[(action_data['time']>=start_time)&(action_data['time']<=end_time)]
+    #actions = get_actions(start_time, end_time)
     df = pd.get_dummies(actions['type'], prefix='type')
     actions = pd.concat([actions['user_id'], df], axis=1)
     actions = actions.groupby(['user_id'], as_index=False).sum()
@@ -107,11 +108,9 @@ def days(action_before):
     return temp
     
 #获取全局特征
-def get_user_acc(start,end):
-
-    action=get_actions(start,end)
-    action['time']=pd.to_datetime(action['time'],format='%Y-%m-%d %H:%M:%S')
-    
+def get_user_acc(starttime,endtime,action_data):
+    action=action_data[(action_data['time']>=starttime)&(action_data['time']<=endtime)]
+    #action=get_actions(start,end)
     #购物车变购物比
     type2to4=type1to2(action,2,4)
     #关注变购比
@@ -121,7 +120,6 @@ def get_user_acc(start,end):
     #浏览变购比
     type1to4=type1to2(action,1,4)
     
-
     res=type1to4
     res=pd.merge(res,type2to4,on=['user_id'],how='outer')
     res=pd.merge(res,type5to4,on=['user_id'],how='outer')
@@ -141,12 +139,12 @@ def get_user_acc(start,end):
 
 
 #main
-def gen_user_fea(start_time, end_time):
+def gen_user_fea(start_time, end_time,action_data):
     user_basic_fea = get_basic_user_fea()
 
     #局部特征
     #获取时间段内的操作行为个数统计
-    user_fea_in_action = get_user_fea_in_action(start_time, end_time)
+    user_fea_in_action = get_user_fea_in_action(start_time, end_time,action_data)
     user_fea = pd.merge(user_fea_in_action, user_basic_fea, on='user_id', how='left')
     
     #print user_fea
@@ -154,11 +152,11 @@ def gen_user_fea(start_time, end_time):
     # user_fea.to_csv(FilePath + user_fea_file, index=False)
 
     #全局特征
-    start='2016-01-31'
-    start = pd.to_datetime(start + ' 00:00:00', format='%Y-%m-%d %H:%M:%S')
-    end=end_time
-    user_acc=get_user_acc(start,end)
-    user_fea=pd.merge(user_fea,user_acc,on=['user_id'],how='left')
+    #start='2016-01-31'
+    #start = pd.to_datetime(start + ' 00:00:00', format='%Y-%m-%d %H:%M:%S')
+    #end=end_time
+    #user_acc=get_user_acc(start,end,action_data)
+    #user_fea=pd.merge(user_fea,user_acc,on=['user_id'],how='left')
     user_fea.fillna(0, inplace=True)
     print user_fea.dtypes
 

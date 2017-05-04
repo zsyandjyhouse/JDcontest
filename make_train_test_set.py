@@ -9,17 +9,17 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-def make_fea_set(sku_fea, user_fea, train_start_date, train_end_time):
+def make_fea_set(sku_fea, user_fea, train_start_date, train_end_time,action_data):
     start_days = "2016-02-01"
     # generate 时间窗口
     actions = None
-    for i in (1, 2, 3, 5, 7, 10, 15):
+    for i in (1, 2, 3, 5, 7, 10, 15, 21, 30):
     #for i in (1, 2, 3, 5, 7, 10, 15, 21, 30):
         start_time = train_end_time - pd.to_timedelta(str(i)+' days')
         if actions is None:
-            actions = get_action_feat(start_time, train_end_time)
+            actions = get_action_feat(start_time, train_end_time,action_data)
         else:
-            actions = pd.merge(actions, get_action_feat(start_time, train_end_time), how='left',
+            actions = pd.merge(actions, get_action_feat(start_time, train_end_time,action_data), how='left',
                                on=['user_id', 'sku_id'])
 
     actions = pd.merge(actions, user_fea, how='left', on='user_id')

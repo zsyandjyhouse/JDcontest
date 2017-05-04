@@ -13,7 +13,7 @@ def get_actions(start_time, end_time):
     FilePath = "../JData/"
     ActionAllFile = "JData_Action_All.csv"
     #ActionAllFile = "JData_Action_before_327.csv"
-    action_all = pd.read_csv(FilePath + ActionAllFile)
+    action_all = pd.read_csv(FilePath + ActionAllFile,nrows=100000)
     action_all.time = pd.to_datetime(action_all['time'],format='%Y-%m-%d %H:%M:%S')
     actions = action_all[(action_all.time >= start_time) & (action_all.time <= end_time)]
     return actions

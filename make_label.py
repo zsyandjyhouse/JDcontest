@@ -19,10 +19,11 @@ ActionAllFile = "JData_Action_All.csv"
 
 
 #获取时间段内购买行为的用户和商品对，label设为1
-def get_labels(start_time, end_time):
-    actions = get_actions(start_time, end_time)
+def get_labels(start_time, end_time,action_data):
+    actions=action_data[(action_data['time']>=start_time)&(action_data['time']<=end_time)]
+    # actions = get_actions(start_time, end_time)
     actions = actions[actions['type'] == 4]
-    actions = actions[actions['cate'] == 8]
+    # actions = actions[actions['cate'] == 8]
     actions = actions.groupby(['user_id', 'sku_id'], as_index=False).sum()
     actions['label'] = 1
     actions = actions[['user_id', 'sku_id', 'label']]
